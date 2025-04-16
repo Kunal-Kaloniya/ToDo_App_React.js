@@ -22,7 +22,7 @@ function App() {
     console.log(tasks);
 
   }
-  
+
   const handleDeleteTask = (id) => {
 
     let tempTasks = tasks;
@@ -31,42 +31,16 @@ function App() {
 
   }
 
-  const handleUpdateTask = (name) => {
-    let tempTasks = [...tasks];
-
-    for (let i = 0; i < tempTasks.length; i++) {
-      if (tempTasks[i]['name'] === name) {
-        setActiveEditPart(i);
-        break;
-      }
-    }
-
+  const handleUpdateTask = (id) => {
+    
   }
 
-  const handleConfirmUpdateTask = (name) => {
-    let tempTasks = [...tasks];
-
-    for (let i = 0; i < tempTasks.length; i++) {
-      if (tempTasks[i]['name'] === name) {
-        tempTasks[i]['name'] = task
-        tempTasks[i]['state'] = status
-        setActiveEditPart(null);
-        break;
-      }
-    }
-
+  const handleConfirmUpdateTask = (id) => {
+    
   }
 
-  const handleCancelUpdateTask = (name) => {
-    let tempTasks = [...tasks];
-
-    for (let i = 0; i < tempTasks.length; i++) {
-      if (tempTasks[i]['name'] === name) {
-        setActiveEditPart(null);
-        break;
-      }
-    }
-
+  const handleCancelUpdateTask = (id) => {
+    
   }
 
   const onTaskChange = (e) => { setTask(e.target.value) }
@@ -107,10 +81,10 @@ function App() {
                     <option value="Completed">Completed</option>
                   </select>
 
-                  <button className="absolute bottom-0 left-0 right-1/2 py-4 text-white bg-gray-600 rounded-bl-lg" onClick={() => handleConfirmUpdateTask(i.name)}>
+                  <button className="absolute bottom-0 left-0 right-1/2 py-4 text-white bg-gray-600 rounded-bl-lg" onClick={() => handleConfirmUpdateTask(i[0])}>
                     Confirm
                   </button>
-                  <button className="absolute bottom-0 left-1/2 right-0 py-4 text-white bg-gray-700 rounded-br-lg" onClick={() => handleCancelUpdateTask(i.name)}>
+                  <button className="absolute bottom-0 left-1/2 right-0 py-4 text-white bg-gray-700 rounded-br-lg" onClick={() => handleCancelUpdateTask(i[0])}>
                     Cancel
                   </button>
                 </> : <>
