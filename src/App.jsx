@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 function App() {
 
   const [tasks, setTasks] = useState({});
-  const [task, setTask] = useState(null);
+  const [task, setTask] = useState("");
   const [status, setStatus] = useState('pending');
-  const [activeEditPart, setActiveEditPart] = useState(null)
 
 
   const handleAddTask = () => {
@@ -16,31 +15,27 @@ function App() {
 
     let newTask = { name: task, state: status };
 
-    let tempTasks = tasks;
+    let tempTasks = { ...tasks };
     tempTasks[new Date().getTime()] = newTask;
     setTasks(tempTasks);
-    console.log(tasks);
+    setTask("");
+    setStatus('pending');
 
   }
 
   const handleDeleteTask = (id) => {
 
-    let tempTasks = tasks;
+    let tempTasks = { ...tasks };
     let final = Object.entries(tempTasks).filter((taskObj) => taskObj[0] !== id);
     setTasks(Object.fromEntries(final));
 
   }
 
-  const handleUpdateTask = (id) => {
-    
-  }
-
-  const handleConfirmUpdateTask = (id) => {
-    
-  }
-
-  const handleCancelUpdateTask = (id) => {
-    
+  const handleDoneTask = (id) => {
+    let tempTasks = { ...tasks };
+    tempTasks[id].state = 'completed';
+    setTasks(tempTasks);
+    console.log(tasks)
   }
 
   const onTaskChange = (e) => { setTask(e.target.value) }
@@ -56,9 +51,9 @@ function App() {
         {/* Input Box */}
         <div className="flex justify-center">
           <div className="relative w-[90vw] h-[6vh] flex justify-center items-center border-1 rounded-lg mt-5">
-            <input type="text" name="task" className="absolute bg-white w-full h-full rounded-lg pl-3 outline-0" placeholder="Add task..." onChange={onTaskChange} />
+            <input type="text" name="task" className="absolute bg-white w-full h-full rounded-lg pl-3 outline-0" value={task} placeholder="Add task..." onChange={onTaskChange} />
 
-            <select name="task-status" id="task-status" className="absolute h-[80%] right-28 rounded-lg px-3 bg-gray-400 outline-0" onChange={onStatusChange}>
+            <select name="task-status" id="task-status" value={status} className="absolute h-[80%] right-28 rounded-lg px-3 bg-gray-400 outline-0" onChange={onStatusChange}>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
             </select>
@@ -71,40 +66,29 @@ function App() {
 
         {/* Task Viewer */}
         <div className="w-full flex justify-center mt-5">
-          <div className="w-[90vw] h-fit bg-gray-300 rounded-lg text-center p-8 grid md:grid-cols-3 sm:grid-cols-2 gap-8">
-            {tasks && Object.entries(tasks).map((i, index) => (
-              <div key={index} className="relative w-[100%]  p-5 bg-white shadow-md rounded-lg transition-all hover:shadow-xl/20">
-                {activeEditPart === index ? <>
-                  <input type="text" name="task" onChange={onTaskChange} className="text-center text-2xl font-medium mb-20 outline-0" placeholder="Enter the new task..." />
-                  <select name="task-status" id="task-status" onChange={onStatusChange} className="absolute bottom-15 left-1/3 px-3 py-1 bg-gray-400 rounded-lg">
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                  </select>
+          <div className="w-[90vw] h-fit bg-gray-300 rounded-lg text-center p-8 grid md:grid-cols-4 sm:grid-cols-2 gap-8">
+            {
+              tasks && Object.entries(tasks).map((i, index) => (
+                <div key={index} className="relative w-[100%]  p-5 bg-white shadow-md rounded-lg transition-all hover:shadow-xl/20">
 
-                  <button className="absolute bottom-0 left-0 right-1/2 py-4 text-white bg-gray-600 rounded-bl-lg" onClick={() => handleConfirmUpdateTask(i[0])}>
-                    Confirm
-                  </button>
-                  <button className="absolute bottom-0 left-1/2 right-0 py-4 text-white bg-gray-700 rounded-br-lg" onClick={() => handleCancelUpdateTask(i[0])}>
-                    Cancel
-                  </button>
-                </> : <>
-                  <h1 className="text-center text-2xl font-medium mb-18">
+                  <div className={`absolute top-2 right-2 w-4 h-4 rounded-full ${i[1]['state'] === 'pending' ? 'bg-red-600' : 'bg-green-500'}`}></div>
+
+                  <h1 className={`text-center text-2xl font-medium mb-12 ${i[1]['state'] === 'completed' ? 'line-through' : ''}`}>
                     {i[1].name}
                   </h1>
-                  <div className="absolute bottom-15 left-1/3">
-                    Status: {i[1].state}
-                  </div>
 
-                  <button className="absolute bottom-0 left-0 right-1/2 py-4 text-white bg-gray-600 rounded-bl-lg" onClick={() => handleUpdateTask(i[0])}>
-                    Update
-                  </button>
-                  <button className="absolute bottom-0 left-1/2 right-0 py-4 text-white bg-gray-700 rounded-br-lg" onClick={() => handleDeleteTask(i[0])}>
+                  {
+                    i[1]['state'] === 'pending' && <>
+                      <button className="absolute bottom-0 left-0 right-1/2 py-3 text-white bg-green-900" onClick={() => handleDoneTask(i[0])}>
+                        Mark as Done
+                      </button>
+                    </>
+                  }
+                  <button className={`absolute bottom-0 ${i[1]['state'] === 'pending' ? 'left-1/2 rounded-br-lg' : 'left-0 rounded-b-lg'} right-0 py-3 text-white bg-gray-700`} onClick={() => handleDeleteTask(i[0])}>
                     Delete
                   </button>
-                </>
-                }
-              </div>
-            ))}
+                </div>
+              ))}
           </div>
         </div>
       </div>
